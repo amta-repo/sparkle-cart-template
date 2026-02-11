@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import gadgetsImage from "@/assets/category-gadgets.jpg";
 import cosmeticsImage from "@/assets/category-cosmetics.jpg";
 import shoesImage from "@/assets/category-shoes.jpg";
@@ -56,53 +57,50 @@ const CategorySection = () => {
                 category.featured ? "md:col-span-2 md:row-span-1" : ""
               }`}
             >
-              <div className="relative overflow-hidden">
-                <img
-                  src={category.image}
-                  alt={category.name}
-                  className={`w-full object-cover transition-transform duration-500 group-hover:scale-110 ${
-                    category.featured ? "h-72" : "h-64"
-                  }`}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <h3 className={`font-bold mb-2 ${category.featured ? "text-2xl" : "text-xl"}`}>
-                    {category.name}
-                  </h3>
-                  <p className="text-white/90 mb-4">{category.description}</p>
+              <Link to={category.href}>
+                <div className="relative overflow-hidden">
+                  <img
+                    src={category.image}
+                    alt={category.name}
+                    className={`w-full object-cover transition-transform duration-500 group-hover:scale-110 ${
+                      category.featured ? "h-72" : "h-64"
+                    }`}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                   
-                  <Button
-                    variant="secondary"
-                    className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
-                  >
-                    Shop Now
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                    <h3 className={`font-bold mb-2 ${category.featured ? "text-2xl" : "text-xl"}`}>
+                      {category.name}
+                    </h3>
+                    <p className="text-white/90 mb-4">{category.description}</p>
+                    
+                    <Button
+                      variant="secondary"
+                      className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
+                    >
+                      Shop Now
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </Card>
           ))}
         </div>
 
         {/* Category Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">10,000+</div>
-            <div className="text-muted-foreground">Products</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">500+</div>
-            <div className="text-muted-foreground">Brands</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">50k+</div>
-            <div className="text-muted-foreground">Happy Customers</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">24/7</div>
-            <div className="text-muted-foreground">Support</div>
-          </div>
+          {[
+            { value: "10,000+", label: "Products" },
+            { value: "500+", label: "Brands" },
+            { value: "50k+", label: "Happy Customers" },
+            { value: "24/7", label: "Support" },
+          ].map(stat => (
+            <div key={stat.label} className="text-center">
+              <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
+              <div className="text-muted-foreground">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

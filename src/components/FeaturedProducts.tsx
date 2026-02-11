@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import ProductCard from "./ProductCard";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // Mock product data - in a real app, this would come from an API
 const featuredProducts = [
@@ -124,10 +125,12 @@ const FeaturedProducts = () => {
               <h2 className="text-3xl md:text-4xl font-bold mb-2">Featured Products</h2>
               <p className="text-muted-foreground">Handpicked items just for you</p>
             </div>
-            <Button variant="outline" className="mt-4 md:mt-0">
-              View All
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <Link to="/products">
+              <Button variant="outline" className="mt-4 md:mt-0">
+                View All
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
@@ -144,10 +147,12 @@ const FeaturedProducts = () => {
               <h2 className="text-3xl md:text-4xl font-bold mb-2">Best Sellers</h2>
               <p className="text-muted-foreground">Most popular items this month</p>
             </div>
-            <Button variant="outline" className="mt-4 md:mt-0">
-              View All Best Sellers
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <Link to="/products">
+              <Button variant="outline" className="mt-4 md:mt-0">
+                View All Best Sellers
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
