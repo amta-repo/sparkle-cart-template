@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { Filter, SlidersHorizontal, Grid3X3, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,373 +11,62 @@ import { Separator } from "@/components/ui/separator";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-
-// Mock products data by category
-const allProducts = {
-  clothing: [
-    {
-      id: "c1",
-      name: "Premium Cotton T-Shirt",
-      price: 29.99,
-      originalPrice: 39.99,
-      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
-      rating: 4.7,
-      reviewCount: 234,
-      isOnSale: true,
-      stockLevel: "high" as const,
-      category: "Clothing",
-      brand: "StyleCo",
-    },
-    {
-      id: "c2",
-      name: "Elegant Summer Dress",
-      price: 79.99,
-      image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop",
-      rating: 4.9,
-      reviewCount: 187,
-      isNew: true,
-      stockLevel: "medium" as const,
-      category: "Clothing",
-      brand: "FashionForward",
-    },
-    {
-      id: "c3",
-      name: "Classic Denim Jacket",
-      price: 89.99,
-      image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop",
-      rating: 4.6,
-      reviewCount: 156,
-      stockLevel: "high" as const,
-      category: "Clothing",
-      brand: "StyleCo",
-    },
-    {
-      id: "c4",
-      name: "Formal Business Suit",
-      price: 299.99,
-      originalPrice: 399.99,
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-      rating: 4.8,
-      reviewCount: 92,
-      isOnSale: true,
-      stockLevel: "low" as const,
-      stockCount: 5,
-      category: "Clothing",
-      brand: "FashionForward",
-    },
-  ],
-  shoes: [
-    {
-      id: "s1",
-      name: "Athletic Running Shoes",
-      price: 129.99,
-      originalPrice: 159.99,
-      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop",
-      rating: 4.8,
-      reviewCount: 412,
-      isOnSale: true,
-      stockLevel: "high" as const,
-      category: "Shoes",
-      brand: "SportMax",
-    },
-    {
-      id: "s2",
-      name: "Elegant High Heels",
-      price: 89.99,
-      image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&h=400&fit=crop",
-      rating: 4.5,
-      reviewCount: 167,
-      stockLevel: "medium" as const,
-      category: "Shoes",
-      brand: "GlamStyle",
-    },
-    {
-      id: "s3",
-      name: "Casual Sneakers",
-      price: 79.99,
-      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
-      rating: 4.7,
-      reviewCount: 298,
-      isNew: true,
-      stockLevel: "high" as const,
-      category: "Shoes",
-      brand: "ComfortWalk",
-    },
-    {
-      id: "s4",
-      name: "Formal Leather Boots",
-      price: 179.99,
-      image: "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=400&h=400&fit=crop",
-      rating: 4.6,
-      reviewCount: 134,
-      stockLevel: "medium" as const,
-      category: "Shoes",
-      brand: "LeatherCraft",
-    },
-  ],
-  gadgets: [
-    {
-      id: "g1",
-      name: "Wireless Bluetooth Headphones",
-      price: 129.99,
-      originalPrice: 179.99,
-      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
-      rating: 4.8,
-      reviewCount: 324,
-      isOnSale: true,
-      stockLevel: "high" as const,
-      category: "Gadgets",
-      brand: "TechPro",
-    },
-    {
-      id: "g2",
-      name: "Smart Fitness Watch",
-      price: 199.99,
-      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
-      rating: 4.9,
-      reviewCount: 567,
-      isNew: true,
-      stockLevel: "medium" as const,
-      category: "Gadgets",
-      brand: "FitTech",
-    },
-    {
-      id: "g3",
-      name: "Portable Phone Charger",
-      price: 39.99,
-      originalPrice: 49.99,
-      image: "https://images.unsplash.com/photo-1609592992071-8942600a8f88?w=400&h=400&fit=crop",
-      rating: 4.6,
-      reviewCount: 189,
-      isOnSale: true,
-      stockLevel: "high" as const,
-      category: "Gadgets",
-      brand: "PowerMax",
-    },
-    {
-      id: "g4",
-      name: "Wireless Gaming Mouse",
-      price: 79.99,
-      image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=400&fit=crop",
-      rating: 4.7,
-      reviewCount: 245,
-      stockLevel: "high" as const,
-      category: "Gadgets",
-      brand: "GameTech",
-    },
-  ],
-  cosmetics: [
-    {
-      id: "co1",
-      name: "Premium Skincare Set",
-      price: 89.99,
-      image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
-      rating: 4.9,
-      reviewCount: 156,
-      isNew: true,
-      stockLevel: "low" as const,
-      stockCount: 3,
-      category: "Cosmetics",
-      brand: "GlowBeauty",
-    },
-    {
-      id: "co2",
-      name: "Luxury Lipstick Collection",
-      price: 49.99,
-      originalPrice: 69.99,
-      image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=400&fit=crop",
-      rating: 4.8,
-      reviewCount: 234,
-      isOnSale: true,
-      stockLevel: "medium" as const,
-      category: "Cosmetics",
-      brand: "LuxeBeauty",
-    },
-    {
-      id: "co3",
-      name: "Professional Makeup Brush Set",
-      price: 39.99,
-      image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&h=400&fit=crop",
-      rating: 4.7,
-      reviewCount: 187,
-      stockLevel: "high" as const,
-      category: "Cosmetics",
-      brand: "ProMakeup",
-    },
-    {
-      id: "co4",
-      name: "Anti-Aging Serum",
-      price: 79.99,
-      image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=400&fit=crop",
-      rating: 4.9,
-      reviewCount: 298,
-      isNew: true,
-      stockLevel: "medium" as const,
-      category: "Cosmetics",
-      brand: "SkinCare+",
-    },
-  ],
-};
-
-const categoryInfo = {
-  clothing: {
-    title: "Clothing Collection",
-    description: "Discover our premium fashion collection for every occasion",
-  },
-  shoes: {
-    title: "Footwear Collection", 
-    description: "Step out in style with our curated shoe collection",
-  },
-  gadgets: {
-    title: "Tech & Gadgets",
-    description: "Latest technology and innovative gadgets for modern life",
-  },
-  cosmetics: {
-    title: "Beauty & Cosmetics",
-    description: "Premium beauty products for your skincare and makeup needs",
-  },
-  sale: {
-    title: "Sale Items",
-    description: "Amazing deals and discounts on your favorite products",
-  },
-};
+import { brandNames, catalogProducts, categoryCards, categoryInfo, categoryNames, saleProducts } from "@/data/catalog";
 
 const ProductListing = () => {
   const { category } = useParams();
+  const { pathname } = useLocation();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [priceRange, setPriceRange] = useState([0, 500]);
+  const maxPrice = Math.max(...catalogProducts.map((product) => product.price));
+  const [priceRange, setPriceRange] = useState([0, maxPrice]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("popularity");
+  const isSalePage = pathname === "/sale";
 
-  // Get products based on category
-  const getProducts = () => {
-    if (category === "sale") {
-      // Return sale items from all categories
-      return Object.values(allProducts).flat().filter(product => product.isOnSale);
-    }
-    if (category && allProducts[category as keyof typeof allProducts]) {
-      return allProducts[category as keyof typeof allProducts];
-    }
-    // Return all products if no category or invalid category
-    return Object.values(allProducts).flat();
-  };
+  const baseProducts = useMemo(() => {
+    if (isSalePage) return saleProducts;
+    if (category && categoryInfo[category as keyof typeof categoryInfo]) return catalogProducts.filter((product) => product.category === category);
+    return catalogProducts;
+  }, [category, isSalePage]);
 
-  const products = getProducts();
-  const currentCategoryInfo = categoryInfo[category as keyof typeof categoryInfo] || {
-    title: "All Products",
-    description: "Discover our complete collection",
-  };
+  const filteredProducts = useMemo(() => {
+    const visibleProducts = baseProducts
+      .filter((product) => product.price >= priceRange[0] && product.price <= priceRange[1])
+      .filter((product) => !searchTerm || [product.name, product.brand, product.categoryLabel].some((value) => value.toLowerCase().includes(searchTerm.toLowerCase())))
+      .filter((product) => selectedCategories.length === 0 || selectedCategories.includes(product.categoryLabel))
+      .filter((product) => selectedBrands.length === 0 || selectedBrands.includes(product.brand));
+    return [...visibleProducts].sort((a, b) => {
+      switch (sortBy) {
+        case "price-low": return a.price - b.price;
+        case "price-high": return b.price - a.price;
+        case "newest": return Number(Boolean(b.isNew)) - Number(Boolean(a.isNew));
+        case "rating": return b.rating - a.rating;
+        default: return b.reviewCount - a.reviewCount;
+      }
+    });
+  }, [baseProducts, priceRange, searchTerm, selectedCategories, selectedBrands, sortBy]);
 
-  const categories = ["Clothing", "Beauty", "Shoes", "Gadgets"];
-  const brands = ["TechPro", "GlowBeauty", "StyleCo", "FashionForward", "SportMax", "FitTech", "PowerMax", "GameTech", "LuxeBeauty", "ProMakeup", "SkinCare+", "GlamStyle", "ComfortWalk", "LeatherCraft"];
-
-  const handleCategoryChange = (category: string, checked: boolean) => {
-    setSelectedCategories(prev => 
-      checked 
-        ? [...prev, category]
-        : prev.filter(c => c !== category)
-    );
-  };
-
-  const handleBrandChange = (brand: string, checked: boolean) => {
-    setSelectedBrands(prev => 
-      checked 
-        ? [...prev, brand]
-        : prev.filter(b => b !== brand)
-    );
-  };
+  const currentCategoryInfo = isSalePage ? { title: "Sale Items", description: "The best current discounts across mobile accessories, smart tech, and solar power." } : category && categoryInfo[category as keyof typeof categoryInfo] ? categoryInfo[category as keyof typeof categoryInfo] : { title: "All Products", description: "Browse the complete XTenova Market catalog." };
+  const handleToggle = (value: string, checked: boolean, items: string[], setter: (items: string[]) => void) => setter(checked ? [...items, value] : items.filter((item) => item !== value));
 
   const FilterSidebar = () => (
     <div className="w-full space-y-6">
-      {/* Price Range */}
       <div>
         <h3 className="font-semibold mb-3">Price Range</h3>
-        <Slider
-          value={priceRange}
-          onValueChange={setPriceRange}
-          max={500}
-          step={10}
-          className="mb-2"
-        />
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>${priceRange[0]}</span>
-          <span>${priceRange[1]}</span>
-        </div>
+        <Slider value={priceRange} onValueChange={setPriceRange} max={maxPrice} step={500} className="mb-2" />
+        <div className="flex justify-between text-sm text-muted-foreground"><span>{priceRange[0].toLocaleString()}</span><span>{priceRange[1].toLocaleString()}</span></div>
       </div>
-
       <Separator />
-
-      {/* Categories */}
       <div>
         <h3 className="font-semibold mb-3">Categories</h3>
-        <div className="space-y-2">
-          {categories.map((category) => (
-            <div key={category} className="flex items-center space-x-2">
-              <Checkbox
-                id={category}
-                checked={selectedCategories.includes(category)}
-                onCheckedChange={(checked) => 
-                  handleCategoryChange(category, checked as boolean)
-                }
-              />
-              <label htmlFor={category} className="text-sm cursor-pointer">
-                {category}
-              </label>
-            </div>
-          ))}
-        </div>
+        <div className="space-y-2">{categoryNames.map((categoryName) => <div key={categoryName} className="flex items-center space-x-2"><Checkbox id={categoryName} checked={selectedCategories.includes(categoryName)} onCheckedChange={(checked) => handleToggle(categoryName, checked as boolean, selectedCategories, setSelectedCategories)} /><label htmlFor={categoryName} className="text-sm cursor-pointer">{categoryName}</label></div>)}</div>
       </div>
-
       <Separator />
-
-      {/* Brands */}
       <div>
         <h3 className="font-semibold mb-3">Brands</h3>
-        <div className="space-y-2">
-          {brands.map((brand) => (
-            <div key={brand} className="flex items-center space-x-2">
-              <Checkbox
-                id={brand}
-                checked={selectedBrands.includes(brand)}
-                onCheckedChange={(checked) => 
-                  handleBrandChange(brand, checked as boolean)
-                }
-              />
-              <label htmlFor={brand} className="text-sm cursor-pointer">
-                {brand}
-              </label>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <Separator />
-
-      {/* Rating Filter */}
-      <div>
-        <h3 className="font-semibold mb-3">Rating</h3>
-        <div className="space-y-2">
-          {[4, 3, 2, 1].map((rating) => (
-            <div key={rating} className="flex items-center space-x-2">
-              <Checkbox id={`rating-${rating}`} />
-              <label htmlFor={`rating-${rating}`} className="flex items-center text-sm cursor-pointer">
-                <span className="flex mr-1">
-                  {[...Array(5)].map((_, i) => (
-                    <span
-                      key={i}
-                      className={`text-sm ${
-                        i < rating ? "text-rating-star" : "text-muted-foreground"
-                      }`}
-                    >
-                      ★
-                    </span>
-                  ))}
-                </span>
-                & up
-              </label>
-            </div>
-          ))}
-        </div>
+        <div className="space-y-2">{brandNames.map((brand) => <div key={brand} className="flex items-center space-x-2"><Checkbox id={brand} checked={selectedBrands.includes(brand)} onCheckedChange={(checked) => handleToggle(brand, checked as boolean, selectedBrands, setSelectedBrands)} /><label htmlFor={brand} className="text-sm cursor-pointer">{brand}</label></div>)}</div>
       </div>
     </div>
   );
@@ -385,122 +74,26 @@ const ProductListing = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
       <main className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <nav className="text-sm text-muted-foreground mb-6">
-          <span>Home</span> / <span>{category ? category.charAt(0).toUpperCase() + category.slice(1) : "Products"}</span>
-        </nav>
-
-        {/* Page Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">{currentCategoryInfo.title}</h1>
-            <p className="text-muted-foreground">{currentCategoryInfo.description}</p>
-          </div>
-          
-          <div className="flex items-center gap-4 mt-4 md:mt-0">
-            {/* Search */}
-            <Input
-              type="search"
-              placeholder="Search products..."
-              className="w-64"
-            />
-            
-            {/* Sort */}
-            <Select defaultValue="popularity">
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="popularity">Most Popular</SelectItem>
-                <SelectItem value="price-low">Price: Low to High</SelectItem>
-                <SelectItem value="price-high">Price: High to Low</SelectItem>
-                <SelectItem value="newest">Newest First</SelectItem>
-                <SelectItem value="rating">Highest Rated</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* View Mode */}
-            <div className="flex rounded-lg border">
-              <Button
-                variant={viewMode === "grid" ? "default" : "ghost"}
-                size="icon"
-                onClick={() => setViewMode("grid")}
-                className="rounded-r-none"
-              >
-                <Grid3X3 className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "ghost"}
-                size="icon"
-                onClick={() => setViewMode("list")}
-                className="rounded-l-none"
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
+        <nav className="text-sm text-muted-foreground mb-6"><span>Home</span> / <span>{currentCategoryInfo.title}</span></nav>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+          <div><h1 className="text-3xl font-bold mb-2">{currentCategoryInfo.title}</h1><p className="text-muted-foreground max-w-2xl">{currentCategoryInfo.description}</p></div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <Input type="search" placeholder="Search products..." className="w-full sm:w-64" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
+            <Select value={sortBy} onValueChange={setSortBy}><SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Sort by" /></SelectTrigger><SelectContent><SelectItem value="popularity">Most Popular</SelectItem><SelectItem value="price-low">Price: Low to High</SelectItem><SelectItem value="price-high">Price: High to Low</SelectItem><SelectItem value="newest">Newest First</SelectItem><SelectItem value="rating">Highest Rated</SelectItem></SelectContent></Select>
+            <div className="flex rounded-lg border"><Button variant={viewMode === "grid" ? "default" : "ghost"} size="icon" onClick={() => setViewMode("grid")} className="rounded-r-none"><Grid3X3 className="h-4 w-4" /></Button><Button variant={viewMode === "list" ? "default" : "ghost"} size="icon" onClick={() => setViewMode("list")} className="rounded-l-none"><List className="h-4 w-4" /></Button></div>
           </div>
         </div>
-
+        {!category && !isSalePage && <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">{categoryCards.map((item) => <div key={item.id} className="rounded-2xl border bg-card p-5"><p className="font-semibold">{item.name}</p><p className="text-sm text-muted-foreground mt-1">{item.description}</p></div>)}</div>}
         <div className="flex gap-8">
-          {/* Desktop Filters */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-8">
-              <h2 className="font-semibold text-lg mb-4 flex items-center">
-                <Filter className="h-5 w-5 mr-2" />
-                Filters
-              </h2>
-              <FilterSidebar />
-            </div>
-          </aside>
-
-          {/* Mobile Filters */}
-          <div className="lg:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="mb-6">
-                  <SlidersHorizontal className="h-4 w-4 mr-2" />
-                  Filters
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-80">
-                <SheetHeader>
-                  <SheetTitle>Filters</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6">
-                  <FilterSidebar />
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-
-          {/* Products Grid */}
+          <aside className="hidden lg:block w-64 flex-shrink-0"><div className="sticky top-8"><h2 className="font-semibold text-lg mb-4 flex items-center"><Filter className="h-5 w-5 mr-2" />Filters</h2><FilterSidebar /></div></aside>
           <div className="flex-1">
-            <div className="mb-4 text-sm text-muted-foreground">
-              Showing 1-{products.length} of {products.length} products
-            </div>
-            
-            <div className={`grid gap-6 ${
-              viewMode === "grid" 
-                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
-                : "grid-cols-1"
-            }`}>
-              {products.map((product) => (
-                <ProductCard key={product.id} {...product} />
-              ))}
-            </div>
-
-            {/* Load More */}
-            <div className="text-center mt-12">
-              <Button variant="outline" size="lg">
-                Load More Products
-              </Button>
-            </div>
+            <div className="lg:hidden mb-6"><Sheet><SheetTrigger asChild><Button variant="outline"><SlidersHorizontal className="h-4 w-4 mr-2" />Filters</Button></SheetTrigger><SheetContent side="left" className="w-80"><SheetHeader><SheetTitle>Filters</SheetTitle></SheetHeader><div className="mt-6"><FilterSidebar /></div></SheetContent></Sheet></div>
+            <div className="mb-4 text-sm text-muted-foreground">Showing {filteredProducts.length} product{filteredProducts.length === 1 ? "" : "s"}</div>
+            {filteredProducts.length === 0 ? <div className="rounded-2xl border bg-card p-10 text-center"><h2 className="text-xl font-semibold mb-2">No products match your filters</h2><p className="text-muted-foreground">Try removing a filter or searching for another item.</p></div> : <div className={`grid gap-6 ${viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"}`}>{filteredProducts.map((product) => <ProductCard key={product.id} {...product} />)}</div>}
           </div>
         </div>
       </main>
-
       <Footer />
     </div>
   );

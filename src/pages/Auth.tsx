@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { storeName } from "@/data/catalog";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -22,22 +23,17 @@ const Auth = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     if (isLogin) {
       const { error } = await signIn(email, password);
-      if (error) {
-        toast({ title: "Login failed", description: error.message, variant: "destructive" });
-      } else {
+      if (error) toast({ title: "Login failed", description: error.message, variant: "destructive" });
+      else {
         toast({ title: "Welcome back!" });
         navigate("/");
       }
     } else {
       const { error } = await signUp(email, password, fullName);
-      if (error) {
-        toast({ title: "Signup failed", description: error.message, variant: "destructive" });
-      } else {
-        toast({ title: "Account created!", description: "Please check your email to verify your account." });
-      }
+      if (error) toast({ title: "Signup failed", description: error.message, variant: "destructive" });
+      else toast({ title: "Account created!", description: "Please check your email to verify your account." });
     }
     setLoading(false);
   };
@@ -49,36 +45,22 @@ const Auth = () => {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">{isLogin ? "Welcome Back" : "Create Account"}</CardTitle>
-            <CardDescription>
-              {isLogin ? "Sign in to access your cart and wishlist" : "Join StyleStore for a personalized experience"}
-            </CardDescription>
+            <CardDescription>{isLogin ? "Sign in to access your cart and wishlist" : `Join ${storeName} for a faster, saved checkout experience`}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
                 <div className="space-y-2">
                   <Label htmlFor="fullName">Full Name</Label>
-                  <Input id="fullName" value={fullName} onChange={e => setFullName(e.target.value)} required />
+                  <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
                 </div>
               )}
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} />
-              </div>
-              <Button type="submit" className="w-full btn-gradient" disabled={loading}>
-                {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
-              </Button>
+              <div className="space-y-2"><Label htmlFor="email">Email</Label><Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
+              <div className="space-y-2"><Label htmlFor="password">Password</Label><Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} /></div>
+              <Button type="submit" className="w-full btn-gradient" disabled={loading}>{loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}</Button>
             </form>
             <div className="mt-6 text-center">
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-sm text-primary hover:underline"
-              >
+              <button type="button" onClick={() => setIsLogin(!isLogin)} className="text-sm text-primary hover:underline">
                 {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
               </button>
             </div>
