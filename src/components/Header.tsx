@@ -9,6 +9,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { categoryCards, storeName } from "@/data/catalog";
+import { formatPrice, FREE_SHIPPING_THRESHOLD } from "@/lib/currency";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -18,26 +20,23 @@ const Header = () => {
   const navigate = useNavigate();
 
   const navigationItems = [
-    { label: "Clothing", href: "/category/clothing" },
-    { label: "Shoes", href: "/category/shoes" },
-    { label: "Gadgets", href: "/category/gadgets" },
-    { label: "Cosmetics", href: "/category/cosmetics" },
+    ...categoryCards.map((category) => ({ label: category.name, href: category.href })),
     { label: "Sale", href: "/sale", highlight: true },
   ];
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b shadow-sm">
       <div className="bg-primary text-primary-foreground py-2 px-4 text-center text-sm">
-        <span>🚚 Free shipping on orders above $50 | 🔥 Sale ends in 2 days!</span>
+        <span>🚚 Free shipping on orders above {formatPrice(FREE_SHIPPING_THRESHOLD)} | ⚡ Fast MTN MoMo checkout available</span>
       </div>
 
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">S</span>
+              <span className="text-primary-foreground font-bold text-sm">X</span>
             </div>
-            <span className="text-xl font-bold">StyleStore</span>
+            <span className="text-xl font-bold">{storeName}</span>
           </Link>
 
           <nav className="hidden md:flex items-center space-x-8">
@@ -46,9 +45,7 @@ const Header = () => {
                 key={item.label}
                 to={item.href}
                 className={`text-sm font-medium transition-colors hover:text-primary ${
-                  item.highlight
-                    ? "text-primary bg-primary/10 px-3 py-1 rounded-full"
-                    : "text-foreground"
+                  item.highlight ? "text-primary bg-primary/10 px-3 py-1 rounded-full" : "text-foreground"
                 }`}
               >
                 {item.label}
@@ -121,11 +118,15 @@ const Header = () => {
               <SheetContent side="right" className="w-80">
                 <div className="flex flex-col space-y-4 mt-8">
                   {navigationItems.map((item) => (
-                    <Link key={item.label} to={item.href}
+                    <Link
+                      key={item.label}
+                      to={item.href}
                       className={`text-lg font-medium py-2 px-4 rounded-lg transition-colors ${
                         item.highlight ? "bg-primary text-primary-foreground" : "hover:bg-secondary"
                       }`}
-                    >{item.label}</Link>
+                    >
+                      {item.label}
+                    </Link>
                   ))}
                   <div className="pt-4 border-t">
                     {user ? (
