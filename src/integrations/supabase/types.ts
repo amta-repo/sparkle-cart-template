@@ -89,6 +89,11 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          payer_phone: string | null
+          payment_currency: string
+          payment_method: string
+          payment_reference: string | null
+          payment_status: string
           shipping_address: string
           shipping_city: string
           shipping_country: string
@@ -101,6 +106,11 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          payer_phone?: string | null
+          payment_currency?: string
+          payment_method?: string
+          payment_reference?: string | null
+          payment_status?: string
           shipping_address: string
           shipping_city: string
           shipping_country?: string
@@ -113,6 +123,11 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          payer_phone?: string | null
+          payment_currency?: string
+          payment_method?: string
+          payment_reference?: string | null
+          payment_status?: string
           shipping_address?: string
           shipping_city?: string
           shipping_country?: string
