@@ -1,11 +1,12 @@
-import gadgetsImage from "@/assets/category-gadgets.jpg";
-import smartTechImage from "@/assets/category-cosmetics.jpg";
-import solarImage from "@/assets/category-shoes.jpg";
+import mobileImage from "@/assets/category-mobile.jpg";
+import smartTechImage from "@/assets/category-smarttech.jpg";
+import solarImage from "@/assets/category-solar.jpg";
 
-export const storeName = "XTenova Market";
-export const storeEmail = "support@xtenovamarket.com";
-export const storePhone = "+229 01 00 00 00 00";
-export const storeLocation = "Cotonou, Benin";
+export const storeName = "Xtenova Mart";
+export const storeEmail = "support@xtenovamart.com";
+export const storePhone = "+229 01 91 13 46 72";
+export const storeLocation = "Cotonou, Bénin";
+export const storeDomain = "xtenovamart.com";
 
 export type CatalogCategory = "mobile-essentials" | "smart-tech" | "solar-power";
 
@@ -30,14 +31,18 @@ export const categoryCards = [
   {
     id: "mobile-essentials" as const,
     name: "Mobile Essentials",
+    nameKey: "cat.mobile-essentials" as const,
+    descKey: "cat.mobile-essentials.desc" as const,
     description: "Smartphones, chargers, power banks, earbuds, and protective cases.",
-    image: gadgetsImage,
+    image: mobileImage,
     href: "/category/mobile-essentials",
     featured: true,
   },
   {
     id: "smart-tech" as const,
     name: "Smart Tech",
+    nameKey: "cat.smart-tech" as const,
+    descKey: "cat.smart-tech.desc" as const,
     description: "Smart watches, speakers, mini projectors, ring lights, and USB gear.",
     image: smartTechImage,
     href: "/category/smart-tech",
@@ -45,6 +50,8 @@ export const categoryCards = [
   {
     id: "solar-power" as const,
     name: "Solar & Power",
+    nameKey: "cat.solar-power" as const,
+    descKey: "cat.solar-power.desc" as const,
     description: "Solar lamps, solar chargers, compact kits, rechargeable fans, and inverters.",
     image: solarImage,
     href: "/category/solar-power",
@@ -67,11 +74,11 @@ export const categoryInfo: Record<CatalogCategory, { title: string; description:
 };
 
 export const catalogProducts: CatalogProduct[] = [
-  { id: "me-1", name: "XTenova Nova 5G Smartphone", price: 189000, originalPrice: 210000, image: gadgetsImage, rating: 4.8, reviewCount: 214, isOnSale: true, stockLevel: "medium", category: "mobile-essentials", categoryLabel: "Mobile Essentials", brand: "XTenova Mobile" },
-  { id: "me-2", name: "20,000mAh Fast Charge Power Bank", price: 18000, image: gadgetsImage, rating: 4.7, reviewCount: 168, isNew: true, stockLevel: "high", category: "mobile-essentials", categoryLabel: "Mobile Essentials", brand: "VoltGo" },
-  { id: "me-3", name: "USB-C Turbo Wall Charger", price: 7000, image: gadgetsImage, rating: 4.6, reviewCount: 123, stockLevel: "high", category: "mobile-essentials", categoryLabel: "Mobile Essentials", brand: "ChargeFlex" },
-  { id: "me-4", name: "Noise-Isolating Earbuds", price: 16500, originalPrice: 19500, image: gadgetsImage, rating: 4.7, reviewCount: 201, isOnSale: true, stockLevel: "low", stockCount: 6, category: "mobile-essentials", categoryLabel: "Mobile Essentials", brand: "SoundFlow" },
-  { id: "me-5", name: "Shockproof Phone Case", price: 4500, image: gadgetsImage, rating: 4.5, reviewCount: 89, stockLevel: "high", category: "mobile-essentials", categoryLabel: "Mobile Essentials", brand: "GuardShell" },
+  { id: "me-1", name: "Xtenova Nova 5G Smartphone", price: 189000, originalPrice: 210000, image: mobileImage, rating: 4.8, reviewCount: 214, isOnSale: true, stockLevel: "medium", category: "mobile-essentials", categoryLabel: "Mobile Essentials", brand: "Xtenova Mobile" },
+  { id: "me-2", name: "20,000mAh Fast Charge Power Bank", price: 18000, image: mobileImage, rating: 4.7, reviewCount: 168, isNew: true, stockLevel: "high", category: "mobile-essentials", categoryLabel: "Mobile Essentials", brand: "VoltGo" },
+  { id: "me-3", name: "USB-C Turbo Wall Charger", price: 7000, image: mobileImage, rating: 4.6, reviewCount: 123, stockLevel: "high", category: "mobile-essentials", categoryLabel: "Mobile Essentials", brand: "ChargeFlex" },
+  { id: "me-4", name: "Noise-Isolating Earbuds", price: 16500, originalPrice: 19500, image: mobileImage, rating: 4.7, reviewCount: 201, isOnSale: true, stockLevel: "low", stockCount: 6, category: "mobile-essentials", categoryLabel: "Mobile Essentials", brand: "SoundFlow" },
+  { id: "me-5", name: "Shockproof Phone Case", price: 4500, image: mobileImage, rating: 4.5, reviewCount: 89, stockLevel: "high", category: "mobile-essentials", categoryLabel: "Mobile Essentials", brand: "GuardShell" },
   { id: "st-1", name: "Smart Watch Pro", price: 32500, originalPrice: 39000, image: smartTechImage, rating: 4.8, reviewCount: 142, isOnSale: true, stockLevel: "medium", category: "smart-tech", categoryLabel: "Smart Tech", brand: "PulseTime" },
   { id: "st-2", name: "Portable Bluetooth Speaker", price: 24000, image: smartTechImage, rating: 4.7, reviewCount: 196, stockLevel: "high", category: "smart-tech", categoryLabel: "Smart Tech", brand: "BoomBeat" },
   { id: "st-3", name: "Mini LED Projector", price: 69000, image: smartTechImage, rating: 4.6, reviewCount: 78, isNew: true, stockLevel: "medium", category: "smart-tech", categoryLabel: "Smart Tech", brand: "ViewBox" },

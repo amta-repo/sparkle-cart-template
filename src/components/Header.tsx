@@ -11,6 +11,9 @@ import { useWishlist } from "@/contexts/WishlistContext";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { categoryCards, storeName } from "@/data/catalog";
 import { formatPrice, FREE_SHIPPING_THRESHOLD } from "@/lib/currency";
+import { useLanguage } from "@/i18n/LanguageContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import xtenovaLogo from "@/assets/logos/xtenova-logo.png";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -18,28 +21,27 @@ const Header = () => {
   const { totalItems: cartCount } = useCart();
   const { totalItems: wishlistCount } = useWishlist();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const navigationItems = [
-    ...categoryCards.map((category) => ({ label: category.name, href: category.href })),
-    { label: "Sale", href: "/sale", highlight: true },
+    ...categoryCards.map((category) => ({ label: t(category.nameKey), href: category.href, highlight: false })),
+    { label: t("header.sale"), href: "/sale", highlight: true },
   ];
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b shadow-sm">
       <div className="bg-primary text-primary-foreground py-2 px-4 text-center text-sm">
-        <span>🚚 Free shipping on orders above {formatPrice(FREE_SHIPPING_THRESHOLD)} | ⚡ Fast MTN MoMo checkout available</span>
+        <span>{t("header.free_shipping", { threshold: formatPrice(FREE_SHIPPING_THRESHOLD) })}</span>
       </div>
 
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">X</span>
-            </div>
-            <span className="text-xl font-bold">{storeName}</span>
+            <img src={xtenovaLogo} alt="Xtenova Mart logo" className="w-9 h-9 rounded-full object-cover" width={36} height={36} />
+            <span className="text-lg sm:text-xl font-bold">{storeName}</span>
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navigationItems.map((item) => (
               <Link
                 key={item.label}
@@ -53,11 +55,13 @@ const Header = () => {
             ))}
           </nav>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-1 sm:space-x-2">
             <div className="hidden lg:flex relative">
-              <Input type="search" placeholder="Search products..." className="w-64 pr-10" />
+              <Input type="search" placeholder={t("header.search")} className="w-52 xl:w-64 pr-10" />
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             </div>
+
+            <LanguageSwitcher />
 
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSearchOpen(!isSearchOpen)}>
               <Search className="h-5 w-5" />
@@ -94,10 +98,10 @@ const Header = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem className="text-xs text-muted-foreground">{user.email}</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/wishlist")}>My Wishlist</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/cart")}>My Cart</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/wishlist")}>{t("header.my_wishlist")}</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/cart")}>{t("header.my_cart")}</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => signOut()} className="text-destructive">
-                    <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                    <LogOut className="h-4 w-4 mr-2" /> {t("header.sign_out")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -131,12 +135,12 @@ const Header = () => {
                   <div className="pt-4 border-t">
                     {user ? (
                       <>
-                        <Link to="/cart" className="text-lg font-medium py-2 px-4 rounded-lg hover:bg-secondary block">My Cart</Link>
-                        <Link to="/wishlist" className="text-lg font-medium py-2 px-4 rounded-lg hover:bg-secondary block">My Wishlist</Link>
-                        <button onClick={() => signOut()} className="text-lg font-medium py-2 px-4 rounded-lg hover:bg-secondary block w-full text-left text-destructive">Sign Out</button>
+                        <Link to="/cart" className="text-lg font-medium py-2 px-4 rounded-lg hover:bg-secondary block">{t("header.my_cart")}</Link>
+                        <Link to="/wishlist" className="text-lg font-medium py-2 px-4 rounded-lg hover:bg-secondary block">{t("header.my_wishlist")}</Link>
+                        <button onClick={() => signOut()} className="text-lg font-medium py-2 px-4 rounded-lg hover:bg-secondary block w-full text-left text-destructive">{t("header.sign_out")}</button>
                       </>
                     ) : (
-                      <Link to="/auth" className="text-lg font-medium py-2 px-4 rounded-lg hover:bg-secondary block">Sign In</Link>
+                      <Link to="/auth" className="text-lg font-medium py-2 px-4 rounded-lg hover:bg-secondary block">{t("header.sign_in")}</Link>
                     )}
                   </div>
                 </div>
@@ -147,7 +151,7 @@ const Header = () => {
 
         {isSearchOpen && (
           <div className="lg:hidden mt-4 relative">
-            <Input type="search" placeholder="Search products..." className="w-full pr-10" autoFocus />
+            <Input type="search" placeholder={t("header.search")} className="w-full pr-10" autoFocus />
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
         )}

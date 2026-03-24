@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { storeName } from "@/data/catalog";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -19,6 +20,7 @@ const Auth = () => {
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,14 +28,11 @@ const Auth = () => {
     if (isLogin) {
       const { error } = await signIn(email, password);
       if (error) toast({ title: "Login failed", description: error.message, variant: "destructive" });
-      else {
-        toast({ title: "Welcome back!" });
-        navigate("/");
-      }
+      else { toast({ title: t("auth.welcome_back") }); navigate("/"); }
     } else {
       const { error } = await signUp(email, password, fullName);
       if (error) toast({ title: "Signup failed", description: error.message, variant: "destructive" });
-      else toast({ title: "Account created!", description: "Please check your email to verify your account." });
+      else toast({ title: t("auth.create_account"), description: "Please check your email to verify your account." });
     }
     setLoading(false);
   };
@@ -41,27 +40,27 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-16 flex justify-center">
+      <main className="container mx-auto px-4 py-12 sm:py-16 flex justify-center">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">{isLogin ? "Welcome Back" : "Create Account"}</CardTitle>
-            <CardDescription>{isLogin ? "Sign in to access your cart and wishlist" : `Join ${storeName} for a faster, saved checkout experience`}</CardDescription>
+            <CardTitle className="text-xl sm:text-2xl">{isLogin ? t("auth.welcome_back") : t("auth.create_account")}</CardTitle>
+            <CardDescription className="text-sm">{isLogin ? t("auth.sign_in_sub") : t("auth.sign_up_sub")}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="fullName">{t("auth.full_name")}</Label>
                   <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
                 </div>
               )}
-              <div className="space-y-2"><Label htmlFor="email">Email</Label><Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
-              <div className="space-y-2"><Label htmlFor="password">Password</Label><Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} /></div>
-              <Button type="submit" className="w-full btn-gradient" disabled={loading}>{loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}</Button>
+              <div className="space-y-2"><Label htmlFor="email">{t("auth.email")}</Label><Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
+              <div className="space-y-2"><Label htmlFor="password">{t("auth.password")}</Label><Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} /></div>
+              <Button type="submit" className="w-full btn-gradient" disabled={loading}>{loading ? t("auth.please_wait") : isLogin ? t("header.sign_in") : t("auth.create_account")}</Button>
             </form>
             <div className="mt-6 text-center">
               <button type="button" onClick={() => setIsLogin(!isLogin)} className="text-sm text-primary hover:underline">
-                {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+                {isLogin ? t("auth.no_account") : t("auth.has_account")}
               </button>
             </div>
           </CardContent>
