@@ -56,7 +56,8 @@ const getMtnAccessToken = async () => {
   if (!parsed.access_token) throw new Error("MTN token response did not include an access token");
   return parsed.access_token as string;
 };
-const requestToPay = async (referenceId: string, token: string, amount: number, currency: string, phone: string, externalId: string) => {
+const SANDBOX_CURRENCY = "EUR";
+const requestToPay = async (referenceId: string, token: string, amount: number, _currency: string, phone: string, externalId: string) => {
   const response = await fetch(`${MTN_BASE_URL}/collection/v1_0/requesttopay`, {
     method: "POST",
     headers: {
@@ -68,10 +69,10 @@ const requestToPay = async (referenceId: string, token: string, amount: number, 
     },
     body: JSON.stringify({
       amount: amount.toFixed(0),
-      currency,
+      currency: SANDBOX_CURRENCY,
       externalId,
       payer: { partyIdType: "MSISDN", partyId: phone },
-      payerMessage: "XTenova Market order payment",
+      payerMessage: "Xtenova Mart order payment",
       payeeNote: "Order payment",
     }),
   });
