@@ -123,8 +123,8 @@ Deno.serve(async (req) => {
     console.log("FedaPay create response:", txText);
     if (!txRes.ok) throw new Error(`FedaPay create transaction failed [${txRes.status}]: ${txText}`);
     const txData = JSON.parse(txText);
-    // FedaPay returns { v1: { transaction: { id, ... } } } or directly { id, ... }
-    const transactionId = txData?.v1?.transaction?.id || txData?.transaction?.id || txData?.id;
+    const transactionPayload = txData?.["v1/transaction"] || txData?.v1?.transaction || txData?.transaction || txData;
+    const transactionId = transactionPayload?.id;
     if (!transactionId) throw new Error(`FedaPay did not return a transaction ID. Response: ${JSON.stringify(txData).slice(0, 500)}`);
 
     // Update order with FedaPay reference
