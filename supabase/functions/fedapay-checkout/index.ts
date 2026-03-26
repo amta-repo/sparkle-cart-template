@@ -120,10 +120,12 @@ Deno.serve(async (req) => {
     });
 
     const txText = await txRes.text();
+    console.log("FedaPay create response:", txText);
     if (!txRes.ok) throw new Error(`FedaPay create transaction failed [${txRes.status}]: ${txText}`);
     const txData = JSON.parse(txText);
-    const transactionId = txData?.v1?.transaction?.id;
-    if (!transactionId) throw new Error("FedaPay did not return a transaction ID");
+    // FedaPay returns { v1: { transaction: { id, ... } } } or directly { id, ... }
+    const transactionId = txData?.v1?.transaction?.id || txData?.transaction?.id || txData?.id;
+    if (!transactionId) throw new Error(`FedaPay did not return a transaction ID. Response: ${JSON.stringify(txData).slice(0, 500)}`);
 
     // Update order with FedaPay reference
     await serviceClient.from("orders").update({
