@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,14 +15,7 @@ import visaLogo from "@/assets/logos/visa-logo.png";
 import mastercardLogo from "@/assets/logos/mastercard-logo.png";
 import { formatPrice, FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE, STORE_COUNTRY, STORE_CURRENCY } from "@/lib/currency";
 import { useLanguage } from "@/i18n/LanguageContext";
-
-declare global {
-  interface Window {
-    openKkiapayWidget: (config: Record<string, unknown>) => void;
-    addKkiapayListener: (event: string, cb: (data: unknown) => void) => void;
-    removeKkiapayListener: (event: string, cb: (data: unknown) => void) => void;
-  }
-}
+import { openKkiapayWidget, addKkiapayListener, removeKkiapayListener } from "kkiapay";
 
 const Checkout = () => {
   const { items, totalPrice, clearCart } = useCart();
