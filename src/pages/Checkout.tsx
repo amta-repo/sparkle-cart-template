@@ -93,7 +93,6 @@ const Checkout = () => {
       // 3. Open Kkiapay widget
       const onSuccess = async (data: any) => {
         try {
-          // Update order with payment reference and mark paid
           await supabase.from("orders").update({
             payment_status: "successful",
             status: "paid",
@@ -101,8 +100,8 @@ const Checkout = () => {
           }).eq("id", order.id);
 
           await clearCart();
-          window.removeKkiapayListener("success", onSuccess);
-          window.removeKkiapayListener("failed", onFailed);
+          removeKkiapayListener("success");
+          removeKkiapayListener("failed");
           navigate("/success");
         } catch (err) {
           console.error("Post-payment update failed:", err);
@@ -116,15 +115,15 @@ const Checkout = () => {
           description: t("checkout.payment_cancelled_desc"),
           variant: "destructive",
         });
-        window.removeKkiapayListener("success", onSuccess);
-        window.removeKkiapayListener("failed", onFailed);
+        removeKkiapayListener("success");
+        removeKkiapayListener("failed");
         setLoading(false);
       };
 
-      window.addKkiapayListener("success", onSuccess);
-      window.addKkiapayListener("failed", onFailed);
+      addKkiapayListener("success", onSuccess);
+      addKkiapayListener("failed", onFailed);
 
-      window.openKkiapayWidget({
+      openKkiapayWidget({
         amount: total,
         position: "center",
         callback: "",
